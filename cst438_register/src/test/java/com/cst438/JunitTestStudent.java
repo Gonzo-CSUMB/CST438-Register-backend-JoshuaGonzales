@@ -20,6 +20,7 @@ import com.cst438.domain.CourseRepository;
 import com.cst438.domain.EnrollmentRepository;
 import com.cst438.domain.Student;
 import com.cst438.domain.StudentRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 @ContextConfiguration(classes = { StudentController.class })
@@ -54,15 +55,14 @@ public class JunitTestStudent {
 		student.setEmail(TEST_STUDENT_EMAIL);
 		student.setName(TEST_STUDENT_NAME);
 		
-		
-		
+		// then do an http post request 
 		response = mvc.perform(
 				MockMvcRequestBuilders
-			      .get("/student/addStudent?email=" + TEST_STUDENT_EMAIL + "&name=" + TEST_STUDENT_NAME)
+			      .post("/student/addStudent")
+			      .content(asJsonString(student))
+			      .contentType(MediaType.APPLICATION_JSON)
 			      .accept(MediaType.APPLICATION_JSON))
 				.andReturn().getResponse();
-		
-		
 		
 		// verify that return status = OK (value 200) 
 		assertEquals(200, response.getStatus());
@@ -73,7 +73,9 @@ public class JunitTestStudent {
 		//run same request with added student to see if the 'already exists error' appears
 		response = mvc.perform(
 				MockMvcRequestBuilders
-			      .get("/student/addStudent?email=" + TEST_STUDENT_EMAIL + "&name=" + TEST_STUDENT_NAME)
+			      .post("/student/addStudent")
+			      .content(asJsonString(student))
+			      .contentType(MediaType.APPLICATION_JSON)
 			      .accept(MediaType.APPLICATION_JSON))
 				.andReturn().getResponse();
 		
@@ -172,4 +174,12 @@ public class JunitTestStudent {
 			
 		assertEquals(400, response.getStatus());
 }
+	private static String asJsonString(final Object obj) {
+		try {
+
+			return new ObjectMapper().writeValueAsString(obj);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 }

@@ -39,30 +39,31 @@ public class StudentController {
 	EnrollmentRepository enrollmentRepository;
 	
 	
-	@GetMapping("/student/addStudent")
+	@PostMapping("/student/addStudent")
 	@Transactional
-	public void addStudent(@RequestParam("email") String email,  @RequestParam("name") String name ) {
+	public Student addStudent(@RequestBody Student student ) { //TODO: switch to post method and return student id
 		//check db for student
-		Student stu = studentRepository.findByEmail(email);
+		Student stu = studentRepository.findByEmail(student.getEmail());
 	
 		//if student does not exist we need to add them to the "system"
 		if(stu == null){
 			//create new student
 			stu = new Student();
-			stu.setName(name);
-			stu.setEmail(email);
+			stu.setName(student.getName());
+			stu.setEmail(student.getEmail());
 			
 			//save new entity to db, so easy :D
 			studentRepository.save(stu);
 			
 			System.out.println("New Student added "+ stu.toString()); 
-			
+			return stu;	
 		}else {
 			throw  new ResponseStatusException( HttpStatus.BAD_REQUEST, "Student already exists in system" + stu.toString());
 		}
+		
 	}
 	
-	@GetMapping("/student/registrationHold")
+	@GetMapping("/student/registrationHold")//TODO: try using put mapping instead, do not use get to update db, gets are read only!!!!
 	@Transactional
 	public void registrationHold(@RequestParam("email")String email) {
 		//check db for student
