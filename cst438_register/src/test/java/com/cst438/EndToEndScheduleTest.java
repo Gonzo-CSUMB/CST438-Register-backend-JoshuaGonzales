@@ -38,7 +38,7 @@ import com.cst438.domain.EnrollmentRepository;
 @SpringBootTest
 public class EndToEndScheduleTest {
 
-	public static final String CHROME_DRIVER_FILE_LOCATION = "C:/chromedriver_win32/chromedriver.exe";
+	public static final String CHROME_DRIVER_FILE_LOCATION = "C:\\Users\\joshu\\OneDrive\\Documents\\cst438\\chromedriver.exe";
 
 	public static final String URL = "http://localhost:3000";
 
